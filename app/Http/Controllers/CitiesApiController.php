@@ -10,7 +10,36 @@ class CitiesApiController extends Controller
     public function getCitiesApi()
     {
         $cities = [
-            'Tokyo', 'Yokohama', 'Kyoto', 'Osaka', 'Sapporo', 'Nagoya'
+            [
+                'name'  =>  'Tokyo',
+                'lat'   =>  35.6762,
+                'lon'  =>  139.6503
+            ],
+            [
+                'name'  =>  'Yokohama',
+                'lat'   =>  35.4437,
+                'lon'  =>  139.6380
+            ],
+            [
+                'name'  =>  'Kyoto',
+                'lat'   =>  35.0116,
+                'lon'  =>  135.7681
+            ],
+            [
+                'name'  =>  'Osaka',
+                'lat'   =>  34.6937,
+                'lon'  =>  135.5023
+            ],
+            [
+                'name'  =>  'Sapporo',
+                'lat'   =>  43.0618,
+                'lon'  =>  141.3545
+            ],
+            [
+                'name'  =>  'Nagoya',
+                'lat'   =>  35.1815,
+                'lon'  =>  136.9066
+            ],
         ];
 
         return response($cities);
@@ -18,10 +47,11 @@ class CitiesApiController extends Controller
 
     public function getCityForecast()
     {
-        $city = request()->get('city');
+        $lat = request()->get('lat');
+        $lon = request()->get('lon');
         $client = new Client();
 
-        $response = $client->request('GET', "https://api.openweathermap.org/data/2.5/forecast?q={$city},JP&units=metric&cnt=5&appid=5f7f84a3021ea834b93a83b2574c177f", [
+        $response = $client->request('GET', "https://api.openweathermap.org/data/2.5/onecall?lat={$lat}&lon={$lon}&exclude=hourly,minutely&units=metric&appid=5f7f84a3021ea834b93a83b2574c177f", [
             'headers' => [
               'Accept' => 'application/json',
               'Authorization' => 'fsq35tMjgUI2eh6YBNZ2w5RHPW+GHEjHyPlnjwGY0nkSSkQ=',

@@ -1,5 +1,6 @@
 require('./bootstrap');
 window.Vue = require('vue');
+var moment = require('moment-timezone');
 
 let module_name = document.querySelector('meta[name="source"]').content;
 
