@@ -10,8 +10,51 @@
 "use strict";
 __webpack_require__.r(__webpack_exports__);
 /* harmony default export */ __webpack_exports__["default"] = ({
+  data: {
+    selectedCity: '',
+    cities: [],
+    cityForecast: [],
+    cityPlaces: []
+  },
+  methods: {
+    selectCity: function selectCity(e) {
+      var _this = this;
+
+      this.selectedCity = e.target.value;
+
+      if (this.city == '') {
+        return;
+      }
+
+      this.cityPlaces = [];
+      return axios.get("/api/city-forecast?city=".concat(this.selectedCity)).then(function (response) {
+        _this.cityForecast = response.data;
+      })["catch"](function (error) {
+        console.log(error);
+      });
+    },
+    searchCityPlaces: function searchCityPlaces(e) {
+      var _this2 = this;
+
+      if (this.selectedCity == '') {
+        return;
+      }
+
+      return axios.get("/api/city-nearby-places?city=".concat(this.selectedCity)).then(function (response) {
+        _this2.cityPlaces = response.data;
+      })["catch"](function (error) {
+        console.log(error);
+      });
+    }
+  },
   mounted: function mounted() {
-    console.log('cities.index mounted');
+    var _this3 = this;
+
+    axios.get('/api/cities').then(function (response) {
+      _this3.cities = response.data;
+    })["catch"](function (error) {
+      console.log(error);
+    });
   }
 });
 
