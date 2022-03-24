@@ -4,27 +4,37 @@ import moment from 'moment-timezone';
 export default {
     data:{
         selectedCity: '',
+        lat: '',
+        lon: '',
         cities: [],
         currentForecast: [],
         dailyForecast: [],
-        cityPlaces: []
+        nearbyPlaces: [],
+        nearbyQuery: '',
+        weatherLoader: false,
+        placesLoader: false
     },
     methods:{
         selectCity(e){
             this.selectedCity = e.target.value;
-            let lat = e.currentTarget.selectedOptions[0].getAttribute('data-lat');
-            let long = e.currentTarget.selectedOptions[0].getAttribute('data-lon');
+            this.lat = e.currentTarget.selectedOptions[0].getAttribute('data-lat');
+            this.lon = e.currentTarget.selectedOptions[0].getAttribute('data-lon');
+            this.currentForecast = [];
+            this.weatherLoader = true;
 
-            if (this.city == '') {
+            if (this.selectedCity == '') {
+                this.clearPage();
+                this.weatherLoader = false;
                 return;
             }
 
-            this.cityPlaces = [];
+            this.nearbyPlaces = [];
 
-            return axios.get(`/api/city-forecast?lat=${lat}&lon=${long}`)
+            return axios.get(`/api/city-forecast?lat=${this.lat}&lon=${this.lon}`)
             .then(response => {
                 let {humidity, pressure, sunrise, sunset, temp, feels_like, dt, weather} = response.data.current;
                 this.dailyForecast = [];
+                this.weatherLoader = false;
                 
                 this.currentForecast = {
                     humidity:       `${humidity}%`,
@@ -40,7 +50,7 @@ export default {
                 };
 
                 response.data.daily.forEach((daily, i) => {
-                    if (i < 7 && i != 0) {
+                    if (i < 6) {
                         this.dailyForecast.push({
                             day:                moment.unix(daily.dt).tz(response.data.timezone).format('ddd, MMM D'),
                             dayTemp:            daily.temp.day,
@@ -58,18 +68,26 @@ export default {
                 console.log(error);
             });
         },
-        searchCityPlaces(e){
-            if (this.selectedCity == '') {
-                return;
-            }
+        searchNearbyPlaces(e){
+            this.placesLoader = true;
 
-            return axios.get(`/api/city-nearby-places?city=${this.selectedCity}`)
+            return axios.get(`/api/city-nearby-places?lat=${this.lat}&lon=${this.lon}&query=${this.nearbyQuery}`)
             .then(response => {
-                this.cityPlaces = response.data;
+                this.placesLoader = false;
+                this.nearbyPlaces = response.data;
+
+                if (response.data.results.length == 0) {
+                    alert('no result found!');
+                }
             })
             .catch(error => {
                 console.log(error);
             });
+        },
+        clearPage(){
+            this.currentForecast = [];
+            this.dailyForecast = [];
+            this.nearbyPlaces = [];
         }
     },
     mounted(){

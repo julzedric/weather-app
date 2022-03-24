@@ -63,16 +63,18 @@ class CitiesApiController extends Controller
 
     public function getCityNearbyPlaces()
     {
-        $city = request()->get('city');
+        $lat = request()->get('lat');
+        $lon = request()->get('lon');
+        $query = request()->get('query');
         $client = new Client();
 
-        $response = $client->request('GET', "https://api.foursquare.com/v3/places/search?near={$city}", [
+        $response = $client->request('GET', "https://api.foursquare.com/v3/places/nearby?ll={$lat},{$lon}&query={$query}", [
             'headers' => [
-                'Accept' => 'application/json',
-                'Authorization' => 'fsq35tMjgUI2eh6YBNZ2w5RHPW+GHEjHyPlnjwGY0nkSSkQ=',
+              'Accept' => 'application/json',
+              'Authorization' => 'fsq35tMjgUI2eh6YBNZ2w5RHPW+GHEjHyPlnjwGY0nkSSkQ=',
             ],
         ]);
-
+        
         return response($response->getBody());
     }
 }

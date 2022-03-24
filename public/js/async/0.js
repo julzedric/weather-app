@@ -15,26 +15,34 @@ __webpack_require__.r(__webpack_exports__);
 /* harmony default export */ __webpack_exports__["default"] = ({
   data: {
     selectedCity: '',
+    lat: '',
+    lon: '',
     cities: [],
     currentForecast: [],
     dailyForecast: [],
-    cityPlaces: []
+    nearbyPlaces: [],
+    nearbyQuery: '',
+    weatherLoader: false,
+    placesLoader: false
   },
   methods: {
     selectCity: function selectCity(e) {
       var _this = this;
 
       this.selectedCity = e.target.value;
-      var lat = e.currentTarget.selectedOptions[0].getAttribute('data-lat');
+      this.lat = e.currentTarget.selectedOptions[0].getAttribute('data-lat');
+      this.lon = e.currentTarget.selectedOptions[0].getAttribute('data-lon');
+      this.currentForecast = [];
+      this.weatherLoader = true;
 
-      var _long = e.currentTarget.selectedOptions[0].getAttribute('data-lon');
-
-      if (this.city == '') {
+      if (this.selectedCity == '') {
+        this.clearPage();
+        this.weatherLoader = false;
         return;
       }
 
-      this.cityPlaces = [];
-      return axios.get("/api/city-forecast?lat=".concat(lat, "&lon=").concat(_long)).then(function (response) {
+      this.nearbyPlaces = [];
+      return axios.get("/api/city-forecast?lat=".concat(this.lat, "&lon=").concat(this.lon)).then(function (response) {
         var _response$data$curren = response.data.current,
             humidity = _response$data$curren.humidity,
             pressure = _response$data$curren.pressure,
@@ -45,6 +53,7 @@ __webpack_require__.r(__webpack_exports__);
             dt = _response$data$curren.dt,
             weather = _response$data$curren.weather;
         _this.dailyForecast = [];
+        _this.weatherLoader = false;
         _this.currentForecast = {
           humidity: "".concat(humidity, "%"),
           pressure: pressure,
@@ -58,7 +67,7 @@ __webpack_require__.r(__webpack_exports__);
           description: weather[0].description
         };
         response.data.daily.forEach(function (daily, i) {
-          if (i < 7 && i != 0) {
+          if (i < 6) {
             _this.dailyForecast.push({
               day: moment_timezone__WEBPACK_IMPORTED_MODULE_0___default.a.unix(daily.dt).tz(response.data.timezone).format('ddd, MMM D'),
               dayTemp: daily.temp.day,
@@ -74,18 +83,25 @@ __webpack_require__.r(__webpack_exports__);
         console.log(error);
       });
     },
-    searchCityPlaces: function searchCityPlaces(e) {
+    searchNearbyPlaces: function searchNearbyPlaces(e) {
       var _this2 = this;
 
-      if (this.selectedCity == '') {
-        return;
-      }
+      this.placesLoader = true;
+      return axios.get("/api/city-nearby-places?lat=".concat(this.lat, "&lon=").concat(this.lon, "&query=").concat(this.nearbyQuery)).then(function (response) {
+        _this2.placesLoader = false;
+        _this2.nearbyPlaces = response.data;
 
-      return axios.get("/api/city-nearby-places?city=".concat(this.selectedCity)).then(function (response) {
-        _this2.cityPlaces = response.data;
+        if (response.data.results.length == 0) {
+          alert('no result found!');
+        }
       })["catch"](function (error) {
         console.log(error);
       });
+    },
+    clearPage: function clearPage() {
+      this.currentForecast = [];
+      this.dailyForecast = [];
+      this.nearbyPlaces = [];
     }
   },
   mounted: function mounted() {

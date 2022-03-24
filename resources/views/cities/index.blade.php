@@ -8,32 +8,33 @@
 <div class="container">
     <div class="row justify-content-center">
         <div class="col-md-9">
-            <div class="card p-4">
-                <div class="card-body text-center">
+            <div class="p-4">
+                <div class="text-center">
                     <h3 class="font-weight-bold mb-4">Japan Weather App</h3>
                     <div class="form-group">
                         <select class="form-control" id="cities" @change="selectCity">
-                            <option value="">--Please Select a Destination</option>
+                            <option value="">--Please select a destination</option>
                             <option v-for="city in cities" :data-lon="city.lon" :data-lat="city.lat" v-text="city.name" :value="city.name"></option>
                         </select>
                     </div>
                 </div>
-
+                <div class="text-center" v-if="weatherLoader">
+                    <div class="spinner-grow text-primary" role="status">
+                        <span class="sr-only">Loading...</span>
+                    </div>
+                </div>
                 <div class="row m-2" v-if="currentForecast.length != 0">
                     <div class="col-md-12 text-center">
                         <h3 class="font-weight-bold">Now in @{{ selectedCity }}</h3>
                         <h5>@{{ currentForecast.current_date }}</h5>
                         <h1 class="font-weight-bold display-4">@{{ currentForecast.current_time }}</h1>
                     </div>
-
                     <div class="col-12 text-center">
                         <img :src="['http://openweathermap.org/img/wn/'+currentForecast.icon+'@2x.png']" width="100" height="100">
                         <h4 class=text-uppercase>@{{ currentForecast.description }}</h4>
-
                         <h1>@{{ currentForecast.temp }} &#8451;</h1>
                         <p>Feels like @{{ currentForecast.feels_like }} &#8451;</p>
                     </div>
-
                     <div class="col-6 text-center">
                         <p class="mb-1">
                             <span class="font-weight-bold text-uppercase">Sunrise: </span>
@@ -44,7 +45,6 @@
                             @{{ currentForecast.sunset }}
                         </p>
                     </div>
-
                     <div class="col-6 text-center">
                         <p class="mb-1">
                             <span class="font-weight-bold text-uppercase">Humidity: </span>
@@ -55,7 +55,6 @@
                             @{{ currentForecast.pressure }} hPa
                         </p>
                     </div>
-
                     <div class="col-4 col-sm-2 text-center mt-5" v-for="daily in dailyForecast">
                         <p class="mb-1 font-weight-bold">@{{ daily.day }}</p>
                         <img :src="['http://openweathermap.org/img/wn/'+daily.icon+'@2x.png']" width="50" height="50">
@@ -68,18 +67,21 @@
                             @{{ daily.nightTemp }} &#8451;
                         </p>
                     </div>
-
-                    <div class="col-md-12">
-                        <button type="button" class="btn btn-primary btn-block btn-lg mt-3" @click="searchCityPlaces" v-if="cityPlaces.length == 0">
-                            See Best Places to Visit in @{{ selectedCity }}
-                        </button>
-                        
-                        <h3 class="text-center mt-5 font-weight-bold" v-else>Best Places to Visit in @{{ selectedCity }}</h3>
+                </div>
+                <div class="col-md-12" v-if="currentForecast.length != 0">
+                    <div class="input-group mb-3">
+                        <input type="text" class="form-control" v-model="nearbyQuery" placeholder="I'm looking for...">
+                        <div class="input-group-append">
+                            <button class="btn btn-success" type="button" disabled v-if="placesLoader">
+                                <span class="spinner-border spinner-border-sm" role="status" aria-hidden="true"></span>
+                                <span class="sr-only">Loading...</span>
+                            </button>
+                            <button class="btn btn-success" type="button" @click="searchNearbyPlaces" v-else>Go</button>
+                        </div>
                     </div>
                 </div>
-
-                <div class="m-2" v-if="cityPlaces.length != 0">
-                    <ul class="list-group" v-for="place in cityPlaces.results">
+                <div class="m-2" v-if="nearbyPlaces.length != 0">
+                    <ul class="list-group" v-for="place in nearbyPlaces.results">
                         <li class="list-group-item d-inline-flex mb-2">
                             <img class="bg-secondary ml-2" :src="category.icon.prefix+'100'+category.icon.suffix" alt="" v-for="category in place.categories" width="50" height="50">
                             <div class="ml-2">
