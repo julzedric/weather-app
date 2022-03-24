@@ -12,13 +12,40 @@ export default {
         nearbyPlaces: [],
         nearbyQuery: '',
         weatherLoader: false,
-        placesLoader: false
+        placesLoader: false,
+        showIcons: true
     },
     methods:{
         selectCity(e){
             this.selectedCity = e.target.value;
             this.lat = e.currentTarget.selectedOptions[0].getAttribute('data-lat');
             this.lon = e.currentTarget.selectedOptions[0].getAttribute('data-lon');
+            this.loadCity();
+        },
+        clickCity(e){
+            this.showIcons = false;
+            this.selectedCity = e.currentTarget.getAttribute('data-value');
+            this.lat = e.currentTarget.getAttribute('data-lat');
+            this.lon = e.currentTarget.getAttribute('data-lon');
+            this.loadCity();
+        },
+        searchNearbyPlaces(e){
+            this.placesLoader = true;
+
+            return axios.get(`/api/city-nearby-places?lat=${this.lat}&lon=${this.lon}&query=${this.nearbyQuery}`)
+            .then(response => {
+                this.placesLoader = false;
+                this.nearbyPlaces = response.data;
+
+                if (response.data.results.length == 0) {
+                    alert('no result found!');
+                }
+            })
+            .catch(error => {
+                console.log(error);
+            });
+        },
+        loadCity(){
             this.currentForecast = [];
             this.weatherLoader = true;
 
@@ -63,22 +90,6 @@ export default {
                     }
                 });
 
-            })
-            .catch(error => {
-                console.log(error);
-            });
-        },
-        searchNearbyPlaces(e){
-            this.placesLoader = true;
-
-            return axios.get(`/api/city-nearby-places?lat=${this.lat}&lon=${this.lon}&query=${this.nearbyQuery}`)
-            .then(response => {
-                this.placesLoader = false;
-                this.nearbyPlaces = response.data;
-
-                if (response.data.results.length == 0) {
-                    alert('no result found!');
-                }
             })
             .catch(error => {
                 console.log(error);

@@ -10962,9 +10962,7 @@ a.text-dark:focus {
   }
 }
 
-body {
-  background-image: url("https://cdn.pixabay.com/photo/2019/07/31/07/43/cloud-4374619_960_720.jpg");
-  background-color: #cccccc;
-  background-size: 100%;
+[v-cloak] {
+  display: none;
 }
 

@@ -23,15 +23,41 @@ __webpack_require__.r(__webpack_exports__);
     nearbyPlaces: [],
     nearbyQuery: '',
     weatherLoader: false,
-    placesLoader: false
+    placesLoader: false,
+    showIcons: true
   },
   methods: {
     selectCity: function selectCity(e) {
-      var _this = this;
-
       this.selectedCity = e.target.value;
       this.lat = e.currentTarget.selectedOptions[0].getAttribute('data-lat');
       this.lon = e.currentTarget.selectedOptions[0].getAttribute('data-lon');
+      this.loadCity();
+    },
+    clickCity: function clickCity(e) {
+      this.showIcons = false;
+      this.selectedCity = e.currentTarget.getAttribute('data-value');
+      this.lat = e.currentTarget.getAttribute('data-lat');
+      this.lon = e.currentTarget.getAttribute('data-lon');
+      this.loadCity();
+    },
+    searchNearbyPlaces: function searchNearbyPlaces(e) {
+      var _this = this;
+
+      this.placesLoader = true;
+      return axios.get("/api/city-nearby-places?lat=".concat(this.lat, "&lon=").concat(this.lon, "&query=").concat(this.nearbyQuery)).then(function (response) {
+        _this.placesLoader = false;
+        _this.nearbyPlaces = response.data;
+
+        if (response.data.results.length == 0) {
+          alert('no result found!');
+        }
+      })["catch"](function (error) {
+        console.log(error);
+      });
+    },
+    loadCity: function loadCity() {
+      var _this2 = this;
+
       this.currentForecast = [];
       this.weatherLoader = true;
 
@@ -52,9 +78,9 @@ __webpack_require__.r(__webpack_exports__);
             feels_like = _response$data$curren.feels_like,
             dt = _response$data$curren.dt,
             weather = _response$data$curren.weather;
-        _this.dailyForecast = [];
-        _this.weatherLoader = false;
-        _this.currentForecast = {
+        _this2.dailyForecast = [];
+        _this2.weatherLoader = false;
+        _this2.currentForecast = {
           humidity: "".concat(humidity, "%"),
           pressure: pressure,
           sunrise: moment_timezone__WEBPACK_IMPORTED_MODULE_0___default.a.unix(sunrise).tz(response.data.timezone).format('h:mm A'),
@@ -68,7 +94,7 @@ __webpack_require__.r(__webpack_exports__);
         };
         response.data.daily.forEach(function (daily, i) {
           if (i < 6) {
-            _this.dailyForecast.push({
+            _this2.dailyForecast.push({
               day: moment_timezone__WEBPACK_IMPORTED_MODULE_0___default.a.unix(daily.dt).tz(response.data.timezone).format('ddd, MMM D'),
               dayTemp: daily.temp.day,
               nightTemp: daily.temp.night,
@@ -79,21 +105,6 @@ __webpack_require__.r(__webpack_exports__);
             });
           }
         });
-      })["catch"](function (error) {
-        console.log(error);
-      });
-    },
-    searchNearbyPlaces: function searchNearbyPlaces(e) {
-      var _this2 = this;
-
-      this.placesLoader = true;
-      return axios.get("/api/city-nearby-places?lat=".concat(this.lat, "&lon=").concat(this.lon, "&query=").concat(this.nearbyQuery)).then(function (response) {
-        _this2.placesLoader = false;
-        _this2.nearbyPlaces = response.data;
-
-        if (response.data.results.length == 0) {
-          alert('no result found!');
-        }
       })["catch"](function (error) {
         console.log(error);
       });

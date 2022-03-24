@@ -5,17 +5,25 @@
 @section('source', 'cities/Index')
 
 @section('content')
-<div class="container">
+<div class="container" v-cloak>
     <div class="row justify-content-center">
         <div class="col-md-9">
             <div class="p-4">
                 <div class="text-center">
-                    <h3 class="font-weight-bold mb-4">Japan Weather App</h3>
-                    <div class="form-group">
-                        <select class="form-control" id="cities" @change="selectCity">
-                            <option value="">--Please select a destination</option>
-                            <option v-for="city in cities" :data-lon="city.lon" :data-lat="city.lat" v-text="city.name" :value="city.name"></option>
-                        </select>
+                    <h2 class="font-weight-bold mb-4 text-uppercase">Japan Weather App</h2>
+                </div>
+                <div class="form-group" v-if="currentForecast.length != 0">
+                    <select class="form-control" id="cities" @change="selectCity">
+                        <option value="">--Select Your Destination</option>
+                        <option v-for="city in cities" :data-lon="city.lon" :data-lat="city.lat" v-text="city.name" :value="city.name"></option>
+                    </select>
+                </div>
+                <div class="text-center" v-if="showIcons">
+                    <h4 class="font-weight-bold mb-4">Pick Your Destination</h4>
+                    <div class="row">
+                        <div class="col-6 col-sm-4 mb-3" role="button" v-for="city in cities" :data-lon="city.lon" :data-lat="city.lat" :data-value="city.name" @click="clickCity">
+                            <img :src="['images/'+city.name.toLowerCase()]+'.jpg'" :alt="city.name" width="150" height="150">
+                        </div>
                     </div>
                 </div>
                 <div class="text-center" v-if="weatherLoader">
@@ -81,7 +89,7 @@
                     </div>
                 </div>
                 <div class="m-2" v-if="nearbyPlaces.length != 0">
-                    <ul class="list-group" v-for="place in nearbyPlaces.results">
+                    <ul class="list-group text-body" v-for="place in nearbyPlaces.results">
                         <li class="list-group-item d-inline-flex mb-2">
                             <img class="bg-secondary ml-2" :src="category.icon.prefix+'100'+category.icon.suffix" alt="" v-for="category in place.categories" width="50" height="50">
                             <div class="ml-2">
