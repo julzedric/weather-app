@@ -56,6 +56,7 @@ export default {
             }
 
             this.nearbyPlaces = [];
+            this.nearbyQuery = '';
 
             return axios.get(`/api/city-forecast?lat=${this.lat}&lon=${this.lon}`)
             .then(response => {

@@ -68,6 +68,7 @@ __webpack_require__.r(__webpack_exports__);
       }
 
       this.nearbyPlaces = [];
+      this.nearbyQuery = '';
       return axios.get("/api/city-forecast?lat=".concat(this.lat, "&lon=").concat(this.lon)).then(function (response) {
         var _response$data$curren = response.data.current,
             humidity = _response$data$curren.humidity,
