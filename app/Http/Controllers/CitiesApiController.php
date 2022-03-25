@@ -45,27 +45,22 @@ class CitiesApiController extends Controller
         return response($cities);
     }
 
-    public function getCityForecast()
+    public function getCityForecast(Request $request)
     {
-        $lat = request()->get('lat');
-        $lon = request()->get('lon');
+        $lat = $request->input('lat');
+        $lon = $request->input('lon');
         $client = new Client();
 
-        $response = $client->request('GET', "https://api.openweathermap.org/data/2.5/onecall?lat={$lat}&lon={$lon}&exclude=hourly,minutely&units=metric&appid=5f7f84a3021ea834b93a83b2574c177f", [
-            'headers' => [
-              'Accept' => 'application/json',
-              'Authorization' => 'fsq35tMjgUI2eh6YBNZ2w5RHPW+GHEjHyPlnjwGY0nkSSkQ=',
-            ],
-        ]);
+        $response = $client->request('GET', "https://api.openweathermap.org/data/2.5/onecall?lat={$lat}&lon={$lon}&exclude=hourly,minutely&units=metric&appid=5f7f84a3021ea834b93a83b2574c177f");
         
         return response($response->getBody());
     }
 
-    public function getCityNearbyPlaces()
+    public function getCityNearbyPlaces(Request $request)
     {
-        $lat = request()->get('lat');
-        $lon = request()->get('lon');
-        $query = request()->get('query');
+        $lat = $request->input('lat');
+        $lon = $request->input('lon');
+        $query = $request->input('query');
         $client = new Client();
 
         $response = $client->request('GET', "https://api.foursquare.com/v3/places/nearby?ll={$lat},{$lon}&query={$query}", [
