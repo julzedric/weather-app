@@ -87,17 +87,17 @@
                             <button class="btn btn-success" type="button" @click="searchNearbyPlaces" v-else>Go</button>
                         </div>
                     </div>
-                </div>
-                <div class="m-2" v-if="nearbyPlaces.length != 0">
-                    <ul class="list-group text-body" v-for="place in nearbyPlaces.results">
-                        <li class="list-group-item d-inline-flex mb-2">
-                            <img class="bg-secondary ml-2" :src="category.icon.prefix+'100'+category.icon.suffix" alt="" v-for="category in place.categories" width="50" height="50">
-                            <div class="ml-2">
-                                <h5 class="font-weight-bold">@{{ place.name }}</h5>
-                                <p>Address: @{{ place.location.formatted_address }}</p>
-                            </div>
-                        </li>
-                    </ul>
+                    <div class="my-2" v-if="nearbyPlaces.length != 0">
+                        <ul class="list-group text-body" v-for="place in nearbyPlaces.results">
+                            <li class="list-group-item d-inline-flex mb-2">
+                                <img class="bg-secondary ml-2" :src="category.icon.prefix+'100'+category.icon.suffix" alt="" v-for="category in place.categories" width="50" height="50">
+                                <div class="ml-2">
+                                    <h5 class="font-weight-bold">@{{ place.name }}</h5>
+                                    <p>Address: @{{ place.location.formatted_address }}</p>
+                                </div>
+                            </li>
+                        </ul>
+                    </div>
                 </div>
             </div>
         </div>
