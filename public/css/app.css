@@ -10962,6 +10962,13 @@ a.text-dark:focus {
   }
 }
 
+body {
+  background-image: url(/images/sky.jpg?cf22ecd8dfa256cd082754ea78612686);
+  background-size: 100%;
+  background-repeat: no-repeat;
+  background-size: cover;
+}
+
 [v-cloak] {
   display: none;
 }

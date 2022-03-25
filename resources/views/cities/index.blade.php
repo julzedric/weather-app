@@ -10,7 +10,7 @@
         <div class="col-md-9">
             <div class="p-4">
                 <div class="text-center">
-                    <h2 class="font-weight-bold mb-4 text-uppercase">Japan Weather App</h2>
+                    <h1 class="font-weight-bold mb-4 text-uppercase">Japan Weather App</h1>
                 </div>
                 <div class="form-group" v-if="currentForecast.length != 0">
                     <select class="form-control" id="cities" @change="selectCity">
@@ -21,13 +21,13 @@
                 <div class="text-center" v-if="showIcons">
                     <h4 class="font-weight-bold mb-4">Pick Your Destination</h4>
                     <div class="row">
-                        <div class="col-6 col-sm-4 mb-3" role="button" v-for="city in cities" :data-lon="city.lon" :data-lat="city.lat" :data-value="city.name" @click="clickCity">
-                            <img :src="['images/'+city.name.toLowerCase()]+'.jpg'" :alt="city.name" width="150" height="150">
+                        <div class="col-6 col-sm-4 my-4" role="button" v-for="city in cities" :data-lon="city.lon" :data-lat="city.lat" :data-value="city.name" @click="clickCity">
+                            <img class="rounded-circle border-dark" :src="['images/icons/'+city.name.toLowerCase()]+'.jpg'" :alt="city.name" width="150" height="150">
                         </div>
                     </div>
                 </div>
                 <div class="text-center" v-if="weatherLoader">
-                    <div class="spinner-grow text-primary" role="status">
+                    <div class="spinner-grow text-dark" role="status">
                         <span class="sr-only">Loading...</span>
                     </div>
                 </div>
